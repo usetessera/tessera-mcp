@@ -42,10 +42,43 @@ jobs:
       - name: Validate npm package tarball
         run: npm pack --dry-run
 
+      - name: Check npm package status
+        id: npm_package
+        shell: bash
+        run: |
+          PACKAGE_NAME="$(node -p "require('./package.json').name")"
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          if npm view "${PACKAGE_NAME}@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
+            echo "published=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::${PACKAGE_NAME}@${PACKAGE_VERSION} is already published, so npm publish will be skipped."
+          else
+            echo "published=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check npm publish credentials
+        id: npm_auth
+        shell: bash
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "can_publish=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::NPM_TOKEN is not configured, so npm publish will be skipped."
+            exit 0
+          fi
+
+          if npm whoami >/tmp/npm-whoami.log 2>&1; then
+            echo "can_publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "can_publish=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::NPM_TOKEN is configured, but npm rejected it. npm publish will be skipped."
+            sed 's/^/::notice::/' /tmp/npm-whoami.log
+          fi
+
       - name: Publish to npm
-        if: startsWith(github.ref, 'refs/tags/') && env.NODE_AUTH_TOKEN != ''
+        id: npm_publish
+        if: startsWith(github.ref, 'refs/tags/') && steps.npm_package.outputs.published != 'true' && steps.npm_auth.outputs.can_publish == 'true'
+        continue-on-error: true
         run: npm publish --access public --provenance
 
-      - name: Skip npm publish when token is missing
-        if: startsWith(github.ref, 'refs/tags/') && env.NODE_AUTH_TOKEN == ''
-        run: echo "::notice::NPM_TOKEN is not configured, so npm publish was skipped. Add the secret and rerun this workflow to publish."
+      - name: Report npm publish failure
+        if: steps.npm_publish.outcome == 'failure'
+        run: echo "::notice::npm publish failed. Verify that NPM_TOKEN can publish this package scope and that the npm @tessera scope exists."

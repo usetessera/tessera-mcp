@@ -4,7 +4,7 @@
   "description": "MCP server exposing Tessera architecture to AI coding agents (Claude Code, Cursor, etc.)",
   "type": "module",
   "bin": {
-    "tessera-mcp": "./dist/index.js"
+    "tessera-mcp": "dist/index.js"
   },
   "main": "./dist/index.js",
   "engines": {
@@ -27,7 +27,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/usetessera/tessera-mcp"
+    "url": "git+https://github.com/usetessera/tessera-mcp.git"
   },
   "homepage": "https://github.com/usetessera/tessera-mcp#readme",
   "bugs": {

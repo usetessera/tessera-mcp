@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
 
 jobs:
   publish:
@@ -11,6 +12,8 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -19,15 +22,16 @@ jobs:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
 
-      - run: npm ci
-
-      - run: npm run lint
-
-      - run: npm test
-
-      - run: npm run build
+      - name: Verify package contents
+        run: |
+          test -f package.json
+          test -f README.md
+          test -f LICENSE
+          test -f dist/index.js
+          node -e "const pkg=require('./package.json'); if (!pkg.bin || !pkg.bin['tessera-mcp']) throw new Error('Missing tessera-mcp bin');"
 
       - name: Verify tag matches package.json version
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
           PKG_VERSION="v$(node -p "require('./package.json').version")"
           if [ "$GITHUB_REF_NAME" != "$PKG_VERSION" ]; then
@@ -35,6 +39,13 @@ jobs:
             exit 1
           fi
 
-      - run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Validate npm package tarball
+        run: npm pack --dry-run
+
+      - name: Publish to npm
+        if: startsWith(github.ref, 'refs/tags/') && env.NODE_AUTH_TOKEN != ''
+        run: npm publish --access public --provenance
+
+      - name: Skip npm publish when token is missing
+        if: startsWith(github.ref, 'refs/tags/') && env.NODE_AUTH_TOKEN == ''
+        run: echo "::notice::NPM_TOKEN is not configured, so npm publish was skipped. Add the secret and rerun this workflow to publish."

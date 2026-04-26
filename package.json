@@ -1,0 +1,58 @@
+{
+  "name": "@tessera/mcp",
+  "version": "0.1.0",
+  "description": "MCP server exposing Tessera architecture to AI coding agents (Claude Code, Cursor, etc.)",
+  "type": "module",
+  "bin": {
+    "tessera-mcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist/**/*.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "mcp",
+    "architecture",
+    "c4",
+    "documentation",
+    "ai",
+    "claude",
+    "cursor",
+    "model-context-protocol"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/usetessera/tessera-mcp"
+  },
+  "homepage": "https://github.com/usetessera/tessera-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/usetessera/tessera-mcp/issues"
+  },
+  "scripts": {
+    "build": "esbuild ./index.ts --bundle --outfile=dist/index.js --format=esm --platform=node --banner:js=\"#!/usr/bin/env node\" --external:@modelcontextprotocol/sdk --external:js-yaml --external:simple-git --external:zod",
+    "test": "vitest run",
+    "lint": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "js-yaml": "^4.1.0",
+    "simple-git": "^3.27.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@tessera/shared": "*",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.0.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "author": "jonny",
+  "license": "MIT"
+}

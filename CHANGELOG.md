@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.1.0] - Early Access
+## [0.1.0] - 2026-07-03
 
 First public early-access release of the Tessera MCP server.
 

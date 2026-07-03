@@ -1,4 +1,4 @@
-# Contributing to @tessera/mcp
+# Contributing to @usetessera/mcp
 
 Thanks for considering a contribution. This guide covers how to run the server locally, how to add or modify a tool, and how to test changes.
 
@@ -15,7 +15,9 @@ mcp-server/
 │   ├── validation/
 │   ├── diagram/
 │   ├── docs/
-│   └── scaffold/
+│   ├── scaffold/
+│   ├── protocols/
+│   └── workflows/
 ├── shared/               Types and constants (also the source of `PRODUCT_NAME`)
 └── tests/                vitest test suites
 ```

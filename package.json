@@ -1,5 +1,5 @@
 {
-  "name": "@tessera/mcp",
+  "name": "@usetessera/mcp",
   "version": "0.1.0",
   "description": "MCP server exposing Tessera architecture to AI coding agents (Claude Code, Cursor, etc.)",
   "type": "module",
@@ -33,6 +33,9 @@
   "bugs": {
     "url": "https://github.com/usetessera/tessera-mcp/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "esbuild ./index.ts --bundle --outfile=dist/index.js --format=esm --platform=node --banner:js=\"#!/usr/bin/env node\" --external:@modelcontextprotocol/sdk --external:js-yaml --external:simple-git --external:zod",
     "test": "vitest run",
@@ -49,9 +52,9 @@
     "@tessera/shared": "*",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.0.0",
-    "esbuild": "^0.24.0",
+    "esbuild": "^0.28.0",
     "typescript": "^5.6.0",
-    "vitest": "^2.1.0"
+    "vitest": "^4.1.6"
   },
   "author": "jonny",
   "license": "MIT"

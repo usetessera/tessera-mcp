@@ -81,4 +81,4 @@ jobs:
 
       - name: Report npm publish failure
         if: steps.npm_publish.outcome == 'failure'
-        run: echo "::notice::npm publish failed. Verify that NPM_TOKEN can publish this package scope and that the npm @tessera scope exists."
+        run: echo "::notice::npm publish failed. Verify that NPM_TOKEN can publish this package scope and that the npm @usetessera scope exists."

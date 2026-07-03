@@ -1,4 +1,4 @@
-# @tessera/mcp
+# @usetessera/mcp
 
 MCP server that exposes your codebase architecture to AI coding agents via the [Model Context Protocol](https://modelcontextprotocol.io).
 
@@ -14,10 +14,18 @@ Tessera uses `architecture.md` files in your folder structure to describe your s
 - Generate Mermaid diagrams from architectural context
 - Scaffold architecture files for existing codebases
 
+## Getting Started (new project)
+
+After installing the MCP, tell your agent:
+
+> "Call `bootstrap_tessera_project` to initialize Tessera in this project."
+
+That single tool orchestrates the full setup: it proposes a C4 layer mapping for your existing folder structure, guides you through questions to confirm your goals and session context, and writes the `.tessera-protocols/` records and `architecture.md` files. Once done, every subsequent session starts by calling `get_session_gate` — which returns your active goals, current session context, and a live validation digest in one read-only call.
+
 ## Installation
 
 ```bash
-npm install -g @tessera/mcp
+npm install -g @usetessera/mcp
 ```
 
 ## Configuration
@@ -46,7 +54,7 @@ Add to your Cursor MCP configuration:
   "mcpServers": {
     "tessera": {
       "command": "npx",
-      "args": ["@tessera/mcp"]
+      "args": ["@usetessera/mcp"]
     }
   }
 }
@@ -61,7 +69,7 @@ Add to your Windsurf MCP configuration (`~/.codeium/windsurf/mcp_config.json`):
   "mcpServers": {
     "tessera": {
       "command": "npx",
-      "args": ["-y", "@tessera/mcp"]
+      "args": ["-y", "@usetessera/mcp"]
     }
   }
 }
@@ -105,7 +113,7 @@ Or via env:
 
 If neither is set, the server operates on whatever directory the MCP client launches it from.
 
-## Available Tools (32 tools across 9 categories)
+## Available Tools (34 tools across 9 categories)
 
 ### Read
 - **`get_architecture_tree`** — Returns the full architecture tree as JSON
@@ -143,6 +151,8 @@ If neither is set, the server operates on whatever directory the MCP client laun
 - **`apply_scaffold`** — Creates architecture.md files from scaffold proposals
 
 ### Protocols
+- **`get_session_gate`** — THE session gate: returns the active goals, current session context, a live validation digest, and the gate instructions in one read-only call (agents should call it first, every session)
+- **`prepare_agent_gate_configs`** — Emits per-agent gate config snippets (CLAUDE.md, AGENTS.md, Cursor rules, generic AGENT.md); files are written only after user confirmation
 - **`prepare_protocol_bootstrap`** — Inspects protocol setup and returns guided bootstrap questions for the agent to ask the user
 - **`apply_protocol_bootstrap`** — Creates `.tessera-protocols/` baseline files from explicit user-confirmed answers
 
